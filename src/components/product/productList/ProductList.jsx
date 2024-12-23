@@ -67,7 +67,6 @@ const ProductList = ({ products, isLoading }) => {
         },
         {
           label: "Cancelar",
-          // onClick: () => alert('Click No')
         },
       ],
     });
@@ -83,9 +82,14 @@ const ProductList = ({ products, isLoading }) => {
 
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;
-
-    setCurrentItems(filteredProducts.slice(itemOffset, endOffset));
-    setPageCount(Math.ceil(filteredProducts.length / itemsPerPage));
+    
+    if (filteredProducts.length === 0) {
+      setCurrentItems([]);
+      setPageCount(0);
+    } else {
+      setCurrentItems(filteredProducts.slice(itemOffset, endOffset));
+      setPageCount(Math.ceil(filteredProducts.length / itemsPerPage));
+    }
   }, [itemOffset, itemsPerPage, filteredProducts]);
 
   const handlePageClick = (event) => {
@@ -145,7 +149,7 @@ const ProductList = ({ products, isLoading }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {currentItems.map((product /* , index */) => {
+                    {currentItems.map((product) => {
                       const { _id, name, sku, category, price, quantity } = product;
                       return (
                         <tr key={_id}>
@@ -190,21 +194,23 @@ const ProductList = ({ products, isLoading }) => {
                 </table>
               )}
             </div>
-            <ReactPaginate
-              breakLabel="..."
-              nextLabel="Siguiente"
-              forcePage={currentPage}
-              onPageChange={handlePageClick}
-              pageRangeDisplayed={10}
-              pageCount={pageCount}
-              previousLabel="Anterior"
-              renderOnZeroPageCount={null}
-              containerClassName="pagination"
-              pageLinkClassName="page-num"
-              previousLinkClassName="page-num"
-              nextLinkClassName="page-num"
-              activeLinkClassName="activePage"
-            />
+            {currentItems.length > 0 && (
+              <ReactPaginate
+                breakLabel="..."
+                nextLabel="Siguiente"
+                forcePage={pageCount > 0 ? currentPage : 0}
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={10}
+                pageCount={Math.max(1, pageCount)}
+                previousLabel="Anterior"
+                renderOnZeroPageCount={null}
+                containerClassName="pagination"
+                pageLinkClassName="page-num"
+                previousLinkClassName="page-num"
+                nextLinkClassName="page-num"
+                activeLinkClassName="activePage"
+              />
+            )}
           </div>
         </div>
       </div>
