@@ -28,6 +28,8 @@ import './App.css'
 
 // Ensure credentials are sent with every request.
 axios.defaults.withCredentials = true;
+axios.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 function App() {
   const dispatch = useDispatch();
